@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LineBot_Michael.Models.BLL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,7 +14,8 @@ namespace LineBot_Michael.Controllers
         //[Route("api/linePost")]
         public IHttpActionResult POST()
         {
-            string ChannelAccessToken = "UG8Tmeddm7pnamwfyg3Gk/jmAdu4XfJPcGfR5LZLDgc90v+VOGgBvMPu/5vMGeJ6zcF72IjqbuFsUCPy6X2PcWOloS20338leBBXbTve8O2GlG6N1VL6u9M4JSCgImZX6bU4QU4dDvTrfofX/ANcjgdB04t89/1O/w1cDnyilFU=";
+            //輸入自己的token
+            string ChannelAccessToken = "";
             try
             {
                 //取得 http Post RawData(should be JSON)
@@ -22,7 +24,14 @@ namespace LineBot_Michael.Controllers
                 var ReceivedMessage = isRock.LineBot.Utility.Parsing(postData);
                 //回覆訊息
                 string Message;
-                Message = "你說了:" + ReceivedMessage.events[0].message.text;
+                if(ReceivedMessage.events[0].message.text == "統一發票")
+                {
+                    Message = Filter.getInvoice();
+                }
+                else
+                {
+                    Message = "預設回傳回聲:" + ReceivedMessage.events[0].message.text;
+                }
                 //回覆用戶
                 isRock.LineBot.Utility.ReplyMessage(ReceivedMessage.events[0].replyToken, Message, ChannelAccessToken);
                 //回覆API OK
